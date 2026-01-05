@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { ENV } from "./config/env.js";
 import { db } from "./config/db.js";
 import { favoritesTable } from "./db/schema.js";
@@ -6,10 +7,11 @@ import { and, eq } from "drizzle-orm";
 import job from "./config/cron.js";
 
 const app = express();
-const PORT = ENV.PORT || 5001;
+const PORT = ENV.PORT || 5000;
 
 if (ENV.NODE_ENV === "production") job.start();
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
@@ -76,6 +78,6 @@ app.delete("/api/favorites/:userId/:recipeId", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Server is running on PORT:", PORT);
 });
